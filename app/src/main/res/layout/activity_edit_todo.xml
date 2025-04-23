@@ -1,0 +1,84 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_margin="16dp"
+    android:id="@+id/editTodo">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Judul"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/etTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Task Title"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_edittext"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Deskripsi"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/etDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Task Description"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_edittext"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tanggal"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/etDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter Date"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_edittext"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
+
+    <Button
+        android:id="@+id/btnSave"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Task"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"/>
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Task"
+        android:backgroundTint="@color/red"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"/>
+
+</LinearLayout>
