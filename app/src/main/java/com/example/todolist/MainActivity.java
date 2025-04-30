@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         String date = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
         todoList.add(new ToDoModel("Capek", "Lama juga bikin tugas kayak gini", date));
         todoList.add(new ToDoModel("Dahlah", "Kak Nilainya 100 yaa kak, udah niat banget buat ni", date));
+        todoList.add(new ToDoModel("Ini Tambahan", "Ini adalah tambahan", date));
         adapter.notifyItemInserted(todoList.size() - 1);
 
         btnAdd.setOnClickListener(v -> {
