@@ -10,7 +10,7 @@ import androidx.room.Update;
 import java.util.List;
 
 @Dao
-public interface ToDoDAO {
+public interface ToDoDao {
     @Insert
     void insert(ToDoModel todo);
 
