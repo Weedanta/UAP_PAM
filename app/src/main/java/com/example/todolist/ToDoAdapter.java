@@ -8,9 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
-    private ArrayList<ToDoModel> todoList;
+    private List<ToDoModel> todoList;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -18,7 +19,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         void onDeleteClick(int position);
     }
 
-    public ToDoAdapter(ArrayList<ToDoModel> todoList, OnItemClickListener listener) {
+    public ToDoAdapter(List<ToDoModel> todoList, OnItemClickListener listener) {
         this.todoList = todoList;
         this.listener = listener;
     }
@@ -44,16 +45,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         }
         holder.tvDesc.setText(desc);
 
-
         holder.btnEdit.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onEditClick(position);
+                listener.onEditClick(holder.getAdapterPosition());
             }
         });
 
         holder.btnDelete.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onDeleteClick(position);
+                listener.onDeleteClick(holder.getAdapterPosition());
             }
         });
     }
@@ -61,6 +61,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     @Override
     public int getItemCount() {
         return todoList.size();
+    }
+
+    // Method to update the adapter data when LiveData changes
+    public void setTodos(List<ToDoModel> todos) {
+        this.todoList = todos;
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
