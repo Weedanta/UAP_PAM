@@ -118,6 +118,7 @@ Jika Anda memiliki pertanyaan atau saran untuk pengembangan aplikasi ini, silaka
 
 - Email: baguswedanta17@gmail.com
 - GitHub: github.com/Weedanta
+- Website: baguswedanta.my.id
 
 ---
 
