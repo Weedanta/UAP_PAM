@@ -24,11 +24,13 @@ TaskMaster adalah aplikasi To-Do List modern yang dirancang dengan arsitektur MV
     <td><img src="img/Home.png" alt="Home Todo" /></td>
     <td><img src="img/Add.png" alt="Tambah Todo" /></td>
     <td><img src="img/Edit.png" alt="Edit Todo" /></td>
+    <td><img src="img/SplashScreen.png" alt="Launch Todo" /></td>
   </tr>
   <tr>
     <td align="center"><b>Home Todo</b></td>
     <td align="center"><b>Tambah Todo</b></td>
     <td align="center"><b>Edit Todo</b></td>
+    <td align="center"><b>Launch Todo</b></td>
   </tr>
 </table>
 </div>
