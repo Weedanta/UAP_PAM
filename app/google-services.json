@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "237712119692",
+    "project_id": "pamfirebase-1140f",
+    "storage_bucket": "pamfirebase-1140f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:237712119692:android:a1370a3e24b0045af728a9",
+        "android_client_info": {
+          "package_name": "com.example.todolist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQqbhq2F29XRDe4dO9wOD_2Lu_wI8HnPU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
