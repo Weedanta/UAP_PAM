@@ -3,7 +3,6 @@ package com.example.todolist.ui.main;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -38,7 +37,6 @@ public class EditTodoActivity extends AppCompatActivity {
         selectedDate = Calendar.getInstance();
 
         setupToolbar();
-        setupSpinners();
         setupDatePicker();
         setupButtons();
         loadTodoData();
@@ -50,20 +48,6 @@ public class EditTodoActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Edit Todo");
         }
-    }
-
-    private void setupSpinners() {
-        // Priority spinner
-        String[] priorities = {"LOW", "MEDIUM", "HIGH"};
-        ArrayAdapter<String> priorityAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, priorities);
-        binding.spinnerPriority.setAdapter(priorityAdapter);
-
-        // Category spinner
-        String[] categories = {"General", "Work", "Personal", "Shopping", "Health", "Study"};
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, categories);
-        binding.spinnerCategory.setAdapter(categoryAdapter);
     }
 
     private void setupDatePicker() {
@@ -95,19 +79,6 @@ public class EditTodoActivity extends AppCompatActivity {
         binding.etTitle.setText(title);
         binding.etDescription.setText(description);
         binding.etDate.setText(date);
-
-        // Set spinner selections
-        if (priority != null) {
-            ArrayAdapter<String> priorityAdapter = (ArrayAdapter<String>) binding.spinnerPriority.getAdapter();
-            int priorityPosition = priorityAdapter.getPosition(priority);
-            binding.spinnerPriority.setSelection(priorityPosition);
-        }
-
-        if (category != null) {
-            ArrayAdapter<String> categoryAdapter = (ArrayAdapter<String>) binding.spinnerCategory.getAdapter();
-            int categoryPosition = categoryAdapter.getPosition(category);
-            binding.spinnerCategory.setSelection(categoryPosition);
-        }
 
         // Parse and set the date
         try {
@@ -142,8 +113,6 @@ public class EditTodoActivity extends AppCompatActivity {
         String title = binding.etTitle.getText().toString().trim();
         String description = binding.etDescription.getText().toString().trim();
         String date = binding.etDate.getText().toString().trim();
-        String priority = binding.spinnerPriority.getSelectedItem().toString();
-        String category = binding.spinnerCategory.getSelectedItem().toString();
 
         if (title.isEmpty()) {
             binding.etTitle.setError("Title is required");
@@ -167,8 +136,8 @@ public class EditTodoActivity extends AppCompatActivity {
 
         Todo todo = new Todo(title, description, date, currentUser.getUid());
         todo.setId(todoId);
-        todo.setPriority(priority);
-        todo.setCategory(category);
+        todo.setPriority("MEDIUM");
+        todo.setCategory("General");
 
         firestoreManager.updateTodo(todo, new FirestoreManager.FirestoreCallback<Void>() {
             @Override

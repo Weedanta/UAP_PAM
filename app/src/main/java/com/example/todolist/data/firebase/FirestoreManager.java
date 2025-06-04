@@ -22,6 +22,8 @@ public class FirestoreManager {
 
     private FirebaseFirestore db;
     private ListenerRegistration todosListener;
+    private MutableLiveData<List<Todo>> todosLiveData;
+    private String currentUserId;
 
     public interface FirestoreCallback<T> {
         void onSuccess(T result);
@@ -30,128 +32,112 @@ public class FirestoreManager {
 
     public FirestoreManager() {
         db = FirebaseFirestore.getInstance();
-        Log.d(TAG, "📊 FirestoreManager initialized");
+        todosLiveData = new MutableLiveData<>();
     }
 
     // Todo Operations
     public void addTodo(Todo todo, FirestoreCallback<String> callback) {
-        Log.d(TAG, "➕ Adding todo: " + todo.getTitle());
-
         db.collection(TODOS_COLLECTION)
                 .add(todo)
                 .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "✅ Todo added with ID: " + documentReference.getId());
+                    Log.d(TAG, "Todo added with ID: " + documentReference.getId());
                     callback.onSuccess(documentReference.getId());
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Error adding todo: " + e.getMessage());
+                    Log.w(TAG, "Error adding todo", e);
                     callback.onFailure(e.getMessage());
                 });
     }
 
     public void updateTodo(Todo todo, FirestoreCallback<Void> callback) {
         if (todo.getId() == null) {
-            Log.e(TAG, "❌ Cannot update todo: ID is null");
             callback.onFailure("Todo ID is null");
             return;
         }
-
-        Log.d(TAG, "✏️ Updating todo: " + todo.getId());
 
         db.collection(TODOS_COLLECTION)
                 .document(todo.getId())
                 .set(todo)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "✅ Todo updated successfully: " + todo.getId());
+                    Log.d(TAG, "Todo updated successfully");
                     callback.onSuccess(null);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Error updating todo: " + e.getMessage());
+                    Log.w(TAG, "Error updating todo", e);
                     callback.onFailure(e.getMessage());
                 });
     }
 
     public void deleteTodo(String todoId, FirestoreCallback<Void> callback) {
-        Log.d(TAG, "🗑️ Deleting todo: " + todoId);
-
         db.collection(TODOS_COLLECTION)
                 .document(todoId)
                 .delete()
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "✅ Todo deleted successfully: " + todoId);
+                    Log.d(TAG, "Todo deleted successfully");
                     callback.onSuccess(null);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Error deleting todo: " + e.getMessage());
+                    Log.w(TAG, "Error deleting todo", e);
                     callback.onFailure(e.getMessage());
                 });
     }
 
     public LiveData<List<Todo>> getUserTodos(String userId) {
-        Log.d(TAG, "📊 Setting up real-time listener for user: " + userId);
+        // Only setup listener if user changed or not set up yet
+        if (currentUserId == null || !currentUserId.equals(userId)) {
+            setupTodosListener(userId);
+            currentUserId = userId;
+        }
+        return todosLiveData;
+    }
 
-        MutableLiveData<List<Todo>> todosLiveData = new MutableLiveData<>();
-
-        // Remove any existing listener first
+    private void setupTodosListener(String userId) {
+        // Remove existing listener
         if (todosListener != null) {
-            Log.d(TAG, "🔌 Removing previous listener");
             todosListener.remove();
-            todosListener = null;
         }
 
-        // Setup new listener
+        Log.d(TAG, "Setting up todos listener for user: " + userId);
+
         todosListener = db.collection(TODOS_COLLECTION)
                 .whereEqualTo("userId", userId)
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
                     if (error != null) {
-                        Log.e(TAG, "❌ Firestore listener error: " + error.getMessage());
-                        todosLiveData.setValue(new ArrayList<>()); // Set empty list on error
+                        Log.w(TAG, "Listen failed.", error);
                         return;
                     }
 
                     List<Todo> todos = new ArrayList<>();
                     if (value != null && !value.isEmpty()) {
-                        Log.d(TAG, "📊 Firestore snapshot received: " + value.size() + " documents");
-
+                        Log.d(TAG, "Received " + value.size() + " todos from Firestore");
                         for (DocumentSnapshot doc : value.getDocuments()) {
-                            try {
-                                Todo todo = doc.toObject(Todo.class);
-                                if (todo != null) {
-                                    todo.setId(doc.getId());
-                                    todos.add(todo);
-                                    Log.d(TAG, "   ✅ Loaded: " + todo.getTitle() + " (ID: " + todo.getId() + ")");
-                                } else {
-                                    Log.w(TAG, "   ⚠️ Failed to parse document: " + doc.getId());
-                                }
-                            } catch (Exception e) {
-                                Log.e(TAG, "   ❌ Error parsing document " + doc.getId() + ": " + e.getMessage());
+                            Todo todo = doc.toObject(Todo.class);
+                            if (todo != null) {
+                                todo.setId(doc.getId());
+                                todos.add(todo);
+                                Log.d(TAG, "Added todo: " + todo.getTitle());
                             }
                         }
                     } else {
-                        Log.d(TAG, "📭 No todos found for user: " + userId);
+                        Log.d(TAG, "No todos found for user");
                     }
 
-                    Log.d(TAG, "🔄 Updating LiveData with " + todos.size() + " todos");
+                    Log.d(TAG, "Updating LiveData with " + todos.size() + " todos");
                     todosLiveData.setValue(todos);
                 });
-
-        Log.d(TAG, "👂 Real-time listener setup complete for user: " + userId);
-        return todosLiveData;
     }
 
     public void toggleTodoComplete(String todoId, boolean isCompleted, FirestoreCallback<Void> callback) {
-        Log.d(TAG, "✅ Toggling completion for todo: " + todoId + " -> " + isCompleted);
-
         db.collection(TODOS_COLLECTION)
                 .document(todoId)
-                .update("isCompleted", isCompleted) // Use same field name as in model
+                .update("completed", isCompleted)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "✅ Todo completion status updated: " + todoId);
+                    Log.d(TAG, "Todo completion status updated");
                     callback.onSuccess(null);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Error updating todo completion: " + e.getMessage());
+                    Log.w(TAG, "Error updating todo completion", e);
                     callback.onFailure(e.getMessage());
                 });
     }
@@ -170,7 +156,7 @@ public class FirestoreManager {
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Error getting user: " + e.getMessage());
+                    Log.w(TAG, "Error getting user", e);
                     callback.onFailure(e.getMessage());
                 });
     }
@@ -180,20 +166,21 @@ public class FirestoreManager {
                 .document(user.getUid())
                 .set(user)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "✅ User updated successfully");
+                    Log.d(TAG, "User updated successfully");
                     callback.onSuccess(null);
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "❌ Error updating user: " + e.getMessage());
+                    Log.w(TAG, "Error updating user", e);
                     callback.onFailure(e.getMessage());
                 });
     }
 
     public void removeListener() {
         if (todosListener != null) {
-            Log.d(TAG, "🔌 Removing Firestore listener");
             todosListener.remove();
             todosListener = null;
+            Log.d(TAG, "Todos listener removed");
         }
+        currentUserId = null;
     }
 }

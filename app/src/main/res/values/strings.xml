@@ -1,29 +1,38 @@
 <resources>
     <string name="app_name">TuDu</string>
 
-    <!-- Auth Strings -->
+    <!-- Authentication -->
     <string name="welcome_title">Welcome to TuDu</string>
     <string name="welcome_subtitle">Your personal task manager</string>
     <string name="sign_in_with_google">Continue with Google</string>
+    <string name="sign_up_with_google">Sign up with Google</string>
     <string name="getting_started">Get Started</string>
     <string name="sign_in_description">Sign in with your Google account to sync your todos across all devices</string>
+    <string name="sign_out">Sign Out</string>
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
     <string name="nav_profile">Profile</string>
+    <string name="home_title">My Todos</string>
+    <string name="profile_title">Profile</string>
 
-    <!-- Todo Strings -->
+    <!-- Todo Actions -->
     <string name="add_todo">Add Todo</string>
+    <string name="add_new_todo">Add New Todo</string>
     <string name="edit_todo">Edit Todo</string>
     <string name="save_todo">Save Todo</string>
     <string name="update_todo">Update</string>
     <string name="delete_todo">Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
 
     <!-- Form Fields -->
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="due_date">Due Date</string>
+    <string name="date">Date</string>
     <string name="priority">Priority</string>
     <string name="category">Category</string>
 
@@ -42,12 +51,19 @@
 
     <!-- Statistics -->
     <string name="total_todos">Total</string>
+    <string name="total">Total</string>
     <string name="pending_todos">Pending</string>
+    <string name="pending">Pending</string>
     <string name="completed_todos">Completed</string>
+    <string name="completed">Completed</string>
+    <string name="completed_stats">Completed</string>
 
     <!-- Empty States -->
     <string name="no_todos">No todos yet</string>
+    <string name="no_todos_yet">No todos yet</string>
     <string name="no_todos_subtitle">Tap the + button to create your first todo</string>
+    <string name="tap_plus_to_create">Tap the + button to create your first todo</string>
+    <string name="no_todos_available">No todos available</string>
 
     <!-- Profile -->
     <string name="profile">Profile</string>
@@ -58,27 +74,36 @@
     <string name="settings_subtitle">Manage your preferences</string>
     <string name="help_support">Help &amp; Support</string>
     <string name="help_subtitle">Get help or report issues</string>
-    <string name="sign_out">Sign Out</string>
 
     <!-- Messages -->
     <string name="todo_added">Todo added successfully</string>
+    <string name="todo_added_successfully">Todo added successfully</string>
     <string name="todo_updated">Todo updated successfully</string>
+    <string name="todo_updated_successfully">Todo updated successfully</string>
     <string name="todo_deleted">Todo deleted successfully</string>
+    <string name="todo_deleted_successfully">Todo deleted successfully</string>
     <string name="error_add_todo">Failed to add todo</string>
+    <string name="error_adding_todo">Failed to add todo</string>
     <string name="error_update_todo">Failed to update todo</string>
+    <string name="error_updating_todo">Failed to update todo</string>
     <string name="error_delete_todo">Failed to delete todo</string>
+    <string name="error_deleting_todo">Failed to delete todo</string>
     <string name="error_user_not_authenticated">User not authenticated</string>
     <string name="error_todo_id_not_found">Todo ID not found</string>
 
     <!-- Validation -->
     <string name="error_title_required">Title is required</string>
+    <string name="title_required">Title is required</string>
     <string name="error_description_required">Description is required</string>
+    <string name="description_required">Description is required</string>
     <string name="error_date_required">Date is required</string>
+    <string name="date_required">Date is required</string>
+    <string name="please_fill_all_fields">Please fill all fields</string>
+    <string name="harap_lengkapi_semua_kolom">Harap lengkapi semua kolom!</string>
 
     <!-- Dialogs -->
     <string name="delete_todo_title">Delete Todo</string>
     <string name="delete_todo_message">Are you sure you want to delete this todo?</string>
-    <string name="delete">Delete</string>
 
     <!-- Features -->
     <string name="feature_sync">Sync</string>
@@ -87,10 +112,52 @@
 
     <!-- Menu -->
     <string name="action_logout">Logout</string>
+    <string name="logout">Logout</string>
 
-    <!-- Loading -->
+    <!-- Loading & States -->
     <string name="loading">Loading...</string>
 
+    <!-- Content Descriptions -->
+    <string name="edit_todo_desc">Edit todo</string>
+    <string name="delete_todo_desc">Delete todo</string>
+    <string name="add_todo_desc">Add todo</string>
+    <string name="calendar_icon">Calendar icon</string>
+    <string name="priority_indicator">Priority indicator</string>
+    <string name="app_logo">App Logo</string>
+
+    <!-- Welcome Messages -->
+    <string name="welcome_user">Welcome %s</string>
+    <string name="welcome_to_tudu">Welcome to TuDu</string>
+    <string name="your_personal_task_manager">Your personal task manager</string>
+    <string name="get_started">Get Started</string>
+
+    <!-- Error Messages -->
+    <string name="error_no_valid_todo_id">Error: No valid todo ID found</string>
+    <string name="todo_cant_be_updated">Todo can\'t be updated!</string>
+    <string name="user_not_authenticated">User not authenticated</string>
+
     <!-- Firebase -->
-    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE</string>
+    <string name="default_web_client_id" translatable="false">YOUR_WEB_CLIENT_ID_HERE</string>
+
+    <!-- Additional UI Strings -->
+    <string name="home">Home</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="close">Close</string>
+    <string name="retry">Retry</string>
+    <string name="refresh">Refresh</string>
+
+    <!-- Time & Date -->
+    <string name="today">Today</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="tomorrow">Tomorrow</string>
+
+    <!-- Accessibility -->
+    <string name="content_description_add_button">Add new todo</string>
+    <string name="content_description_edit_button">Edit this todo</string>
+    <string name="content_description_delete_button">Delete this todo</string>
+    <string name="content_description_complete_checkbox">Mark todo as complete</string>
+
 </resources>

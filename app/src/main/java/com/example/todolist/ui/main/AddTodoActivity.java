@@ -3,12 +3,10 @@ package com.example.todolist.ui.main;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.todolist.R;
 import com.example.todolist.databinding.ActivityAddTodoBinding;
 import com.example.todolist.data.firebase.FirebaseAuthManager;
 import com.example.todolist.data.firebase.FirestoreManager;
@@ -36,7 +34,6 @@ public class AddTodoActivity extends AppCompatActivity {
         selectedDate = Calendar.getInstance();
 
         setupToolbar();
-        setupSpinners();
         setupDatePicker();
         setupButtons();
         setDefaultDate();
@@ -48,21 +45,6 @@ public class AddTodoActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("Add New Todo");
         }
-    }
-
-    private void setupSpinners() {
-        // Priority spinner
-        String[] priorities = {"LOW", "MEDIUM", "HIGH"};
-        ArrayAdapter<String> priorityAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, priorities);
-        binding.spinnerPriority.setAdapter(priorityAdapter);
-        binding.spinnerPriority.setSelection(1); // Default to MEDIUM
-
-        // Category spinner
-        String[] categories = {"General", "Work", "Personal", "Shopping", "Health", "Study"};
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, categories);
-        binding.spinnerCategory.setAdapter(categoryAdapter);
     }
 
     private void setupDatePicker() {
@@ -104,8 +86,6 @@ public class AddTodoActivity extends AppCompatActivity {
         String title = binding.etTitle.getText().toString().trim();
         String description = binding.etDescription.getText().toString().trim();
         String date = binding.etDate.getText().toString().trim();
-        String priority = binding.spinnerPriority.getSelectedItem().toString();
-        String category = binding.spinnerCategory.getSelectedItem().toString();
 
         if (title.isEmpty()) {
             binding.etTitle.setError("Title is required");
@@ -128,8 +108,8 @@ public class AddTodoActivity extends AppCompatActivity {
         showLoading();
 
         Todo todo = new Todo(title, description, date, currentUser.getUid());
-        todo.setPriority(priority);
-        todo.setCategory(category);
+        todo.setPriority("MEDIUM");
+        todo.setCategory("General");
 
         firestoreManager.addTodo(todo, new FirestoreManager.FirestoreCallback<String>() {
             @Override

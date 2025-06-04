@@ -3,8 +3,6 @@ package com.example.todolist.data.model;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Todo {
     @DocumentId
@@ -13,7 +11,7 @@ public class Todo {
     private String description;
     private String date;
     private String userId;
-    private boolean isCompleted;
+    private boolean completed; // Changed from isCompleted to completed for Firestore consistency
     private String priority; // HIGH, MEDIUM, LOW
     private String category;
     @ServerTimestamp
@@ -23,32 +21,16 @@ public class Todo {
 
     public Todo() {
         // Required empty constructor for Firestore
-        this.isCompleted = false;
-        this.priority = "MEDIUM";
-        this.category = "General";
     }
 
     public Todo(String title, String description, String date, String userId) {
-        this.title = title != null ? title : "";
-        this.description = description != null ? description : "";
-        this.date = date != null ? date : "";
-        this.userId = userId != null ? userId : "";
-        this.isCompleted = false;
+        this.title = title;
+        this.description = description;
+        this.date = date;
+        this.userId = userId;
+        this.completed = false;
         this.priority = "MEDIUM";
         this.category = "General";
-    }
-
-    // Method untuk debugging - convert ke Map
-    public Map<String, Object> toMap() {
-        Map<String, Object> result = new HashMap<>();
-        result.put("title", title);
-        result.put("description", description);
-        result.put("date", date);
-        result.put("userId", userId);
-        result.put("isCompleted", isCompleted);
-        result.put("priority", priority);
-        result.put("category", category);
-        return result;
     }
 
     // Getters and Setters
@@ -61,7 +43,7 @@ public class Todo {
     }
 
     public String getTitle() {
-        return title != null ? title : "";
+        return title;
     }
 
     public void setTitle(String title) {
@@ -69,7 +51,7 @@ public class Todo {
     }
 
     public String getDescription() {
-        return description != null ? description : "";
+        return description;
     }
 
     public void setDescription(String description) {
@@ -77,7 +59,7 @@ public class Todo {
     }
 
     public String getDate() {
-        return date != null ? date : "";
+        return date;
     }
 
     public void setDate(String date) {
@@ -85,23 +67,28 @@ public class Todo {
     }
 
     public String getUserId() {
-        return userId != null ? userId : "";
+        return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
+    // Keep both methods for backward compatibility
     public boolean isCompleted() {
-        return isCompleted;
+        return completed;
+    }
+
+    public boolean getCompleted() {
+        return completed;
     }
 
     public void setCompleted(boolean completed) {
-        isCompleted = completed;
+        this.completed = completed;
     }
 
     public String getPriority() {
-        return priority != null ? priority : "MEDIUM";
+        return priority;
     }
 
     public void setPriority(String priority) {
@@ -109,7 +96,7 @@ public class Todo {
     }
 
     public String getCategory() {
-        return category != null ? category : "General";
+        return category;
     }
 
     public void setCategory(String category) {
@@ -130,5 +117,19 @@ public class Todo {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Todo{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", date='" + date + '\'' +
+                ", userId='" + userId + '\'' +
+                ", completed=" + completed +
+                ", priority='" + priority + '\'' +
+                ", category='" + category + '\'' +
+                '}';
     }
 }

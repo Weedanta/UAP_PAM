@@ -1,34 +1,26 @@
-<!-- Path: app/src/main/res/layout/fragment_profile.xml -->
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/background_light">
 
-    <!-- App Bar -->
-    <com.google.android.material.appbar.AppBarLayout
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-        app:elevation="0dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@drawable/toolbar_gradient"
-            app:title="Profile"
-            app:titleTextColor="@android:color/white" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary_color"
+        app:title="Profile"
+        app:titleTextColor="@android:color/white" />
 
     <!-- Content -->
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,7 +107,6 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_chart"
-                        android:tint="@color/primary_color"
                         android:layout_marginEnd="16dp"
                         android:layout_gravity="center_vertical" />
 
@@ -146,7 +137,6 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"
-                        android:tint="@color/text_secondary"
                         android:layout_gravity="center_vertical" />
 
                 </LinearLayout>
@@ -173,7 +163,6 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_settings"
-                        android:tint="@color/primary_color"
                         android:layout_marginEnd="16dp"
                         android:layout_gravity="center_vertical" />
 
@@ -204,7 +193,6 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"
-                        android:tint="@color/text_secondary"
                         android:layout_gravity="center_vertical" />
 
                 </LinearLayout>
@@ -231,7 +219,6 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_help"
-                        android:tint="@color/primary_color"
                         android:layout_marginEnd="16dp"
                         android:layout_gravity="center_vertical" />
 
@@ -262,7 +249,6 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:src="@drawable/ic_arrow_forward"
-                        android:tint="@color/text_secondary"
                         android:layout_gravity="center_vertical" />
 
                 </LinearLayout>
@@ -283,6 +269,6 @@
 
         </LinearLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

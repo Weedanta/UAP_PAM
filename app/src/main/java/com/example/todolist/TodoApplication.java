@@ -1,4 +1,5 @@
 package com.example.todolist;
+
 import android.app.Application;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ public class TodoApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         // Initialize Firebase
         FirebaseApp.initializeApp(this);
         Log.d(TAG, "Firebase initialized successfully");

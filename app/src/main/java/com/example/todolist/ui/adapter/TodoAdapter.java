@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todolist.R;
@@ -35,7 +34,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
     public TodoAdapter(OnTodoClickListener listener) {
         this.listener = listener;
-        Log.d(TAG, "📱 TodoAdapter created");
     }
 
     @NonNull
@@ -48,10 +46,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull TodoViewHolder holder, int position) {
-        if (position < todos.size()) {
-            Todo todo = todos.get(position);
-            holder.bind(todo);
-        }
+        Todo todo = todos.get(position);
+        holder.bind(todo);
     }
 
     @Override
@@ -59,29 +55,10 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         return todos.size();
     }
 
-    public void setTodos(List<Todo> newTodos) {
-        Log.d(TAG, "📊 setTodos called with " + (newTodos != null ? newTodos.size() : "null") + " items");
-
-        if (newTodos == null) {
-            newTodos = new ArrayList<>();
-        }
-
-        // Use DiffUtil for better performance and animations
-        TodoDiffCallback diffCallback = new TodoDiffCallback(this.todos, newTodos);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
-
-        this.todos.clear();
-        this.todos.addAll(newTodos);
-
-        diffResult.dispatchUpdatesTo(this);
-
-        Log.d(TAG, "📱 Adapter updated with " + this.todos.size() + " todos");
-
-        // Log todos for debugging
-        for (int i = 0; i < this.todos.size(); i++) {
-            Todo todo = this.todos.get(i);
-            Log.d(TAG, "   " + (i+1) + ". " + todo.getTitle() + " (completed: " + todo.isCompleted() + ")");
-        }
+    public void setTodos(List<Todo> todos) {
+        Log.d(TAG, "Setting todos: " + todos.size() + " items");
+        this.todos = new ArrayList<>(todos); // Create a copy to avoid reference issues
+        notifyDataSetChanged();
     }
 
     class TodoViewHolder extends RecyclerView.ViewHolder {
@@ -89,6 +66,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         private CheckBox cbCompleted;
         private ImageButton btnEdit, btnDelete;
         private View priorityIndicator;
+        private boolean isBinding = false; // Flag to prevent infinite loops
 
         public TodoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -116,7 +94,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             btnEdit.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION && listener != null) {
-                    Log.d(TAG, "✏️ Edit button clicked for position: " + position);
                     listener.onEditClick(todos.get(position));
                 }
             });
@@ -124,60 +101,70 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             btnDelete.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION && listener != null) {
-                    Log.d(TAG, "🗑️ Delete button clicked for position: " + position);
                     listener.onDeleteClick(todos.get(position));
                 }
             });
 
             cbCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && listener != null) {
-                    Log.d(TAG, "✅ Checkbox toggled for position: " + position + " -> " + isChecked);
+                if (!isBinding && position != RecyclerView.NO_POSITION && listener != null) {
+                    Log.d(TAG, "Checkbox changed: " + isChecked + " for position " + position);
                     listener.onCompleteToggle(todos.get(position), isChecked);
                 }
             });
         }
 
         public void bind(Todo todo) {
-            if (todo == null) {
-                Log.w(TAG, "⚠️ Attempting to bind null todo");
-                return;
-            }
+            isBinding = true; // Prevent checkbox listener from firing during bind
+
+            Log.d(TAG, "Binding todo: " + todo.getTitle() + ", completed: " + todo.isCompleted());
 
             tvTitle.setText(todo.getTitle());
             tvDescription.setText(todo.getDescription());
             tvDate.setText(todo.getDate());
             tvPriority.setText(todo.getPriority());
             tvCategory.setText(todo.getCategory());
-
-            // Set checkbox without triggering listener
-            cbCompleted.setOnCheckedChangeListener(null);
             cbCompleted.setChecked(todo.isCompleted());
-            setupClickListeners(); // Re-setup listeners
 
             // Set priority color
             int priorityColor = getPriorityColor(todo.getPriority());
             priorityIndicator.setBackgroundColor(priorityColor);
             tvPriority.setTextColor(priorityColor);
 
-            // Apply completed styling
-            applyCompletedStyling(todo.isCompleted());
+            // Apply completed style
+            applyCompletedStyle(todo.isCompleted());
+
+            isBinding = false; // Re-enable checkbox listener
         }
 
-        private void applyCompletedStyling(boolean isCompleted) {
+        private void applyCompletedStyle(boolean isCompleted) {
             if (isCompleted) {
+                // Strike through text
                 tvTitle.setPaintFlags(tvTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 tvDescription.setPaintFlags(tvDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+                // Reduce opacity
                 itemView.setAlpha(0.7f);
+
+                // Change text color to secondary
+                tvTitle.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_secondary));
+                tvDescription.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_secondary));
             } else {
+                // Remove strike through
                 tvTitle.setPaintFlags(tvTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 tvDescription.setPaintFlags(tvDescription.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+
+                // Full opacity
                 itemView.setAlpha(1.0f);
+
+                // Normal text color
+                tvTitle.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_primary));
+                tvDescription.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_secondary));
             }
         }
 
         private int getPriorityColor(String priority) {
-            if (priority == null) return ContextCompat.getColor(itemView.getContext(), R.color.priority_medium);
+            if (priority == null) priority = "MEDIUM";
 
             switch (priority.toUpperCase()) {
                 case "HIGH":
@@ -189,52 +176,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
                 default:
                     return ContextCompat.getColor(itemView.getContext(), R.color.priority_medium);
             }
-        }
-    }
-
-    // DiffUtil Callback for efficient updates
-    private static class TodoDiffCallback extends DiffUtil.Callback {
-        private final List<Todo> oldList;
-        private final List<Todo> newList;
-
-        public TodoDiffCallback(List<Todo> oldList, List<Todo> newList) {
-            this.oldList = oldList;
-            this.newList = newList;
-        }
-
-        @Override
-        public int getOldListSize() {
-            return oldList.size();
-        }
-
-        @Override
-        public int getNewListSize() {
-            return newList.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            Todo oldTodo = oldList.get(oldItemPosition);
-            Todo newTodo = newList.get(newItemPosition);
-
-            if (oldTodo == null || newTodo == null) return false;
-
-            return oldTodo.getId() != null && oldTodo.getId().equals(newTodo.getId());
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            Todo oldTodo = oldList.get(oldItemPosition);
-            Todo newTodo = newList.get(newItemPosition);
-
-            if (oldTodo == null || newTodo == null) return false;
-
-            return oldTodo.getTitle().equals(newTodo.getTitle()) &&
-                    oldTodo.getDescription().equals(newTodo.getDescription()) &&
-                    oldTodo.getDate().equals(newTodo.getDate()) &&
-                    oldTodo.getPriority().equals(newTodo.getPriority()) &&
-                    oldTodo.getCategory().equals(newTodo.getCategory()) &&
-                    oldTodo.isCompleted() == newTodo.isCompleted();
         }
     }
 }
