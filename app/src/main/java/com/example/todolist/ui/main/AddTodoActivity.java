@@ -3,10 +3,12 @@ package com.example.todolist.ui.main;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.todolist.R;
 import com.example.todolist.databinding.ActivityAddTodoBinding;
 import com.example.todolist.data.firebase.FirebaseAuthManager;
 import com.example.todolist.data.firebase.FirestoreManager;
@@ -22,6 +24,12 @@ public class AddTodoActivity extends AppCompatActivity {
     private FirebaseAuthManager authManager;
     private FirestoreManager firestoreManager;
     private Calendar selectedDate;
+
+    // Data for dropdowns
+    private String[] priorityOptions = {"HIGH", "MEDIUM", "LOW"};
+    private String[] categoryOptions = {"General", "Work", "Personal", "Shopping", "Health", "Study"};
+    private String selectedPriority = "MEDIUM";
+    private String selectedCategory = "General";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +56,13 @@ public class AddTodoActivity extends AppCompatActivity {
     private void setupUI() {
         setupToolbar();
         setupDatePicker();
+        setupDropdowns();
         setupButtons();
         setDefaultDate();
     }
 
     private void setupToolbar() {
         try {
-            // Set up toolbar if it exists
             if (binding.toolbar != null) {
                 setSupportActionBar(binding.toolbar);
                 if (getSupportActionBar() != null) {
@@ -62,11 +70,9 @@ public class AddTodoActivity extends AppCompatActivity {
                     getSupportActionBar().setTitle("Add New Todo");
                 }
             } else {
-                // Fallback: just set title
                 setTitle("Add New Todo");
             }
         } catch (Exception e) {
-            // If toolbar setup fails, just set title
             setTitle("Add New Todo");
         }
     }
@@ -80,6 +86,42 @@ public class AddTodoActivity extends AppCompatActivity {
             }
         } catch (Exception e) {
             // Ignore date picker setup errors
+        }
+    }
+
+    private void setupDropdowns() {
+        try {
+            // Setup Priority Dropdown
+            if (binding.spinnerPriority != null) {
+                ArrayAdapter<String> priorityAdapter = new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        priorityOptions
+                );
+                binding.spinnerPriority.setAdapter(priorityAdapter);
+                binding.spinnerPriority.setText(selectedPriority, false);
+                binding.spinnerPriority.setOnItemClickListener((parent, view, position, id) -> {
+                    selectedPriority = priorityOptions[position];
+                });
+            }
+
+            // Setup Category Dropdown
+            if (binding.spinnerCategory != null) {
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        categoryOptions
+                );
+                binding.spinnerCategory.setAdapter(categoryAdapter);
+                binding.spinnerCategory.setText(selectedCategory, false);
+                binding.spinnerCategory.setOnItemClickListener((parent, view, position, id) -> {
+                    selectedCategory = categoryOptions[position];
+                });
+            }
+        } catch (Exception e) {
+            // Fallback values
+            selectedPriority = "MEDIUM";
+            selectedCategory = "General";
         }
     }
 
@@ -127,7 +169,6 @@ public class AddTodoActivity extends AppCompatActivity {
                 binding.etDate.setText(sdf.format(selectedDate.getTime()));
             }
         } catch (Exception e) {
-            // If date formatting fails, set current date manually
             if (binding.etDate != null) {
                 binding.etDate.setText("10/06/2025");
             }
@@ -169,8 +210,8 @@ public class AddTodoActivity extends AppCompatActivity {
 
             // Create and save todo
             Todo todo = new Todo(title, description, date, currentUser.getUid());
-            todo.setPriority("MEDIUM");
-            todo.setCategory("General");
+            todo.setPriority(selectedPriority);
+            todo.setCategory(selectedCategory);
 
             firestoreManager.addTodo(todo, new FirestoreManager.FirestoreCallback<String>() {
                 @Override
@@ -178,6 +219,8 @@ public class AddTodoActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         hideLoading();
                         Toast.makeText(AddTodoActivity.this, "Todo added successfully", Toast.LENGTH_SHORT).show();
+
+                        // Set result OK to trigger refresh in calling activity
                         setResult(RESULT_OK);
                         finish();
                     });

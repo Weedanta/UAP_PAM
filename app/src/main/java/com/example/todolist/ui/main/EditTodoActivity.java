@@ -3,6 +3,7 @@ package com.example.todolist.ui.main;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -25,6 +26,12 @@ public class EditTodoActivity extends AppCompatActivity {
     private FirestoreManager firestoreManager;
     private Calendar selectedDate;
     private String todoId;
+
+    // Data for dropdowns
+    private String[] priorityOptions = {"HIGH", "MEDIUM", "LOW"};
+    private String[] categoryOptions = {"General", "Work", "Personal", "Shopping", "Health", "Study"};
+    private String selectedPriority = "MEDIUM";
+    private String selectedCategory = "General";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,7 @@ public class EditTodoActivity extends AppCompatActivity {
     private void setupUI() {
         setupToolbar();
         setupDatePicker();
+        setupDropdowns();
         setupButtons();
     }
 
@@ -83,6 +91,40 @@ public class EditTodoActivity extends AppCompatActivity {
         }
     }
 
+    private void setupDropdowns() {
+        try {
+            // Setup Priority Dropdown
+            if (binding.spinnerPriority != null) {
+                ArrayAdapter<String> priorityAdapter = new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        priorityOptions
+                );
+                binding.spinnerPriority.setAdapter(priorityAdapter);
+                binding.spinnerPriority.setOnItemClickListener((parent, view, position, id) -> {
+                    selectedPriority = priorityOptions[position];
+                });
+            }
+
+            // Setup Category Dropdown
+            if (binding.spinnerCategory != null) {
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(
+                        this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        categoryOptions
+                );
+                binding.spinnerCategory.setAdapter(categoryAdapter);
+                binding.spinnerCategory.setOnItemClickListener((parent, view, position, id) -> {
+                    selectedCategory = categoryOptions[position];
+                });
+            }
+        } catch (Exception e) {
+            // Fallback values
+            selectedPriority = "MEDIUM";
+            selectedCategory = "General";
+        }
+    }
+
     private void setupButtons() {
         try {
             if (binding.btnSave != null) {
@@ -107,6 +149,8 @@ public class EditTodoActivity extends AppCompatActivity {
             String title = getIntent().getStringExtra("TITLE");
             String description = getIntent().getStringExtra("DESCRIPTION");
             String date = getIntent().getStringExtra("DATE");
+            String priority = getIntent().getStringExtra("PRIORITY");
+            String category = getIntent().getStringExtra("CATEGORY");
 
             if (todoId == null) {
                 Toast.makeText(this, "Error: Todo ID not found", Toast.LENGTH_SHORT).show();
@@ -118,6 +162,18 @@ public class EditTodoActivity extends AppCompatActivity {
             setTextSafely(binding.etTitle, title);
             setTextSafely(binding.etDescription, description);
             setTextSafely(binding.etDate, date);
+
+            // Set priority and category with fallback
+            selectedPriority = (priority != null && !priority.isEmpty()) ? priority : "MEDIUM";
+            selectedCategory = (category != null && !category.isEmpty()) ? category : "General";
+
+            // Update dropdown displays
+            if (binding.spinnerPriority != null) {
+                binding.spinnerPriority.setText(selectedPriority, false);
+            }
+            if (binding.spinnerCategory != null) {
+                binding.spinnerCategory.setText(selectedCategory, false);
+            }
 
             // Parse and set the date
             if (date != null && !date.isEmpty()) {
@@ -209,8 +265,8 @@ public class EditTodoActivity extends AppCompatActivity {
             // Create and update todo
             Todo todo = new Todo(title, description, date, currentUser.getUid());
             todo.setId(todoId);
-            todo.setPriority("MEDIUM");
-            todo.setCategory("General");
+            todo.setPriority(selectedPriority);
+            todo.setCategory(selectedCategory);
 
             firestoreManager.updateTodo(todo, new FirestoreManager.FirestoreCallback<Void>() {
                 @Override

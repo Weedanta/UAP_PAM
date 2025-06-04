@@ -38,7 +38,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="32dp"
-            android:minHeight="@dimen/match_parent"
             android:gravity="center">
 
             <!-- Logo -->
@@ -48,7 +47,8 @@
                 android:layout_height="120dp"
                 android:layout_gravity="center"
                 android:src="@drawable/tudulogo"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="12dp"
                 android:contentDescription="App Logo" />
 
             <!-- Welcome text -->

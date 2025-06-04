@@ -60,10 +60,7 @@ public class ProfileFragment extends Fragment {
                 binding.ivProfileImage.setImageResource(R.drawable.ic_profile_placeholder);
             }
 
-            // Set join date (you might want to get this from Firestore)
-            String joinDate = SimpleDateFormat.getDateInstance(SimpleDateFormat.LONG, Locale.getDefault())
-                    .format(new Date());
-            binding.tvJoinDate.setText("Member since " + joinDate);
+
         }
     }
 
@@ -77,17 +74,7 @@ public class ProfileFragment extends Fragment {
             });
         });
 
-        binding.cardStats.setOnClickListener(v -> {
-            // TODO: Show statistics or navigate to stats screen
-        });
 
-        binding.cardSettings.setOnClickListener(v -> {
-            // TODO: Navigate to settings
-        });
-
-        binding.cardHelp.setOnClickListener(v -> {
-            // TODO: Navigate to help/support
-        });
     }
 
     @Override
