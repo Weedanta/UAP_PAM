@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ToDoList"
         tools:targetApi="31">
+<<<<<<< HEAD
+=======
+
+        <!-- Login Activity - Entry point -->
+>>>>>>> b61f967 (final commit)
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -21,12 +26,44 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<<<<<<< HEAD
         <activity
             android:name=".AddTodoActivity"
             android:exported="false" />
         <activity
             android:name=".EditTodoActivity"
             android:exported="false" />
+=======
+
+        <!-- Register Activity -->
+        <activity
+            android:name=".ui.main.RegisterActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ToDoList.NoActionBar" />
+
+        <!-- Main Activity -->
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ToDoList.NoActionBar" />
+
+        <!-- Add Todo Activity - FIX: Tambahkan NoActionBar theme -->
+        <activity
+            android:name=".ui.main.AddTodoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ToDoList.NoActionBar"
+            android:parentActivityName=".ui.main.MainActivity" />
+
+        <!-- Edit Todo Activity - FIX: Tambahkan NoActionBar theme -->
+        <activity
+            android:name=".ui.main.EditTodoActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ToDoList.NoActionBar"
+            android:parentActivityName=".ui.main.MainActivity" />
+
+
+
+>>>>>>> b61f967 (final commit)
     </application>
 
 </manifest>

@@ -1,26 +1,36 @@
 {
   "project_info": {
-    "project_number": "237712119692",
-    "project_id": "pamfirebase-1140f",
-    "storage_bucket": "pamfirebase-1140f.firebasestorage.app"
+    "project_number": "559801503250",
+    "project_id": "uapmobile-111e2",
+    "storage_bucket": "uapmobile-111e2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:237712119692:android:a1370a3e24b0045af728a9",
+        "mobilesdk_app_id": "1:559801503250:android:4a115e49a7b0c6d99192cb",
         "android_client_info": {
           "package_name": "com.example.todolist"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "559801503250-dvc1r3porc6cnuh50cm0mncfn7lf0p51.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyAQqbhq2F29XRDe4dO9wOD_2Lu_wI8HnPU"
+          "current_key": "AIzaSyDydlZCLXcgRqHcswMW70BHgSru_Y8Tvh0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559801503250-dvc1r3porc6cnuh50cm0mncfn7lf0p51.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -3,6 +3,8 @@ package com.example.todolist.data.model;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Todo {
     @DocumentId
@@ -21,16 +23,32 @@ public class Todo {
 
     public Todo() {
         // Required empty constructor for Firestore
-    }
-
-    public Todo(String title, String description, String date, String userId) {
-        this.title = title;
-        this.description = description;
-        this.date = date;
-        this.userId = userId;
         this.isCompleted = false;
         this.priority = "MEDIUM";
         this.category = "General";
+    }
+
+    public Todo(String title, String description, String date, String userId) {
+        this.title = title != null ? title : "";
+        this.description = description != null ? description : "";
+        this.date = date != null ? date : "";
+        this.userId = userId != null ? userId : "";
+        this.isCompleted = false;
+        this.priority = "MEDIUM";
+        this.category = "General";
+    }
+
+    // Method untuk debugging - convert ke Map
+    public Map<String, Object> toMap() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("title", title);
+        result.put("description", description);
+        result.put("date", date);
+        result.put("userId", userId);
+        result.put("isCompleted", isCompleted);
+        result.put("priority", priority);
+        result.put("category", category);
+        return result;
     }
 
     // Getters and Setters
@@ -43,7 +61,7 @@ public class Todo {
     }
 
     public String getTitle() {
-        return title;
+        return title != null ? title : "";
     }
 
     public void setTitle(String title) {
@@ -51,7 +69,7 @@ public class Todo {
     }
 
     public String getDescription() {
-        return description;
+        return description != null ? description : "";
     }
 
     public void setDescription(String description) {
@@ -59,7 +77,7 @@ public class Todo {
     }
 
     public String getDate() {
-        return date;
+        return date != null ? date : "";
     }
 
     public void setDate(String date) {
@@ -67,7 +85,7 @@ public class Todo {
     }
 
     public String getUserId() {
-        return userId;
+        return userId != null ? userId : "";
     }
 
     public void setUserId(String userId) {
@@ -83,7 +101,7 @@ public class Todo {
     }
 
     public String getPriority() {
-        return priority;
+        return priority != null ? priority : "MEDIUM";
     }
 
     public void setPriority(String priority) {
@@ -91,7 +109,7 @@ public class Todo {
     }
 
     public String getCategory() {
-        return category;
+        return category != null ? category : "General";
     }
 
     public void setCategory(String category) {
