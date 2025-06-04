@@ -2,10 +2,12 @@ package com.example.todolist.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -87,5 +89,35 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MainActivity", "🔄 MainActivity onResume - refreshing current fragment");
+
+        // Refresh current fragment data
+        refreshCurrentFragment();
+    }
+
+    private void refreshCurrentFragment() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+
+        if (currentFragment instanceof HomeFragment) {
+            Log.d("MainActivity", "🏠 Refreshing HomeFragment");
+            // HomeFragment akan auto-refresh di onResume()
+        }
+        // Add other fragments if needed
+    }
+
+    // Juga tambahkan method untuk handle activity result (jika diperlukan)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            Log.d("MainActivity", "✅ Activity returned with success - refreshing data");
+            refreshCurrentFragment();
+        }
     }
 }

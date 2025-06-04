@@ -1,7 +1,6 @@
 package com.example.todolist.ui.adapter;
 
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder> {
-    private static final String TAG = "TodoAdapter";
-
     private List<Todo> todos = new ArrayList<>();
     private OnTodoClickListener listener;
 
@@ -56,7 +53,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
     }
 
     public void setTodos(List<Todo> todos) {
-        Log.d(TAG, "Setting todos: " + todos.size() + " items");
         this.todos = new ArrayList<>(todos); // Create a copy to avoid reference issues
         notifyDataSetChanged();
     }
@@ -66,7 +62,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
         private CheckBox cbCompleted;
         private ImageButton btnEdit, btnDelete;
         private View priorityIndicator;
-        private boolean isBinding = false; // Flag to prevent infinite loops
+        private boolean isBinding = false; // Flag to prevent recursive calls
 
         public TodoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,50 +76,42 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             btnDelete = itemView.findViewById(R.id.btnDelete);
             priorityIndicator = itemView.findViewById(R.id.priorityIndicator);
 
-            setupClickListeners();
-        }
-
-        private void setupClickListeners() {
             itemView.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onTodoClick(todos.get(position));
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onTodoClick(todos.get(getAdapterPosition()));
                 }
             });
 
             btnEdit.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onEditClick(todos.get(position));
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onEditClick(todos.get(getAdapterPosition()));
                 }
             });
 
             btnDelete.setOnClickListener(v -> {
-                int position = getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION && listener != null) {
-                    listener.onDeleteClick(todos.get(position));
+                if (listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    listener.onDeleteClick(todos.get(getAdapterPosition()));
                 }
             });
 
             cbCompleted.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                int position = getAdapterPosition();
-                if (!isBinding && position != RecyclerView.NO_POSITION && listener != null) {
-                    Log.d(TAG, "Checkbox changed: " + isChecked + " for position " + position);
-                    listener.onCompleteToggle(todos.get(position), isChecked);
+                if (!isBinding && listener != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
+                    Todo todo = todos.get(getAdapterPosition());
+                    listener.onCompleteToggle(todo, isChecked);
                 }
             });
         }
 
         public void bind(Todo todo) {
-            isBinding = true; // Prevent checkbox listener from firing during bind
-
-            Log.d(TAG, "Binding todo: " + todo.getTitle() + ", completed: " + todo.isCompleted());
+            isBinding = true; // Prevent checkbox listener from firing during binding
 
             tvTitle.setText(todo.getTitle());
             tvDescription.setText(todo.getDescription());
             tvDate.setText(todo.getDate());
             tvPriority.setText(todo.getPriority());
             tvCategory.setText(todo.getCategory());
+
+            // Set checkbox state without triggering listener
             cbCompleted.setChecked(todo.isCompleted());
 
             // Set priority color
@@ -131,14 +119,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
             priorityIndicator.setBackgroundColor(priorityColor);
             tvPriority.setTextColor(priorityColor);
 
-            // Apply completed style
-            applyCompletedStyle(todo.isCompleted());
-
-            isBinding = false; // Re-enable checkbox listener
-        }
-
-        private void applyCompletedStyle(boolean isCompleted) {
-            if (isCompleted) {
+            // Apply visual changes for completed todos
+            if (todo.isCompleted()) {
                 // Strike through text
                 tvTitle.setPaintFlags(tvTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 tvDescription.setPaintFlags(tvDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -146,9 +128,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
                 // Reduce opacity
                 itemView.setAlpha(0.7f);
 
-                // Change text color to secondary
-                tvTitle.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_secondary));
-                tvDescription.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_secondary));
+                // Disable edit button for completed todos
+                btnEdit.setEnabled(false);
+                btnEdit.setAlpha(0.5f);
             } else {
                 // Remove strike through
                 tvTitle.setPaintFlags(tvTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
@@ -157,14 +139,18 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.TodoViewHolder
                 // Full opacity
                 itemView.setAlpha(1.0f);
 
-                // Normal text color
-                tvTitle.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_primary));
-                tvDescription.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.text_secondary));
+                // Enable edit button
+                btnEdit.setEnabled(true);
+                btnEdit.setAlpha(1.0f);
             }
+
+            isBinding = false; // Re-enable checkbox listener
         }
 
         private int getPriorityColor(String priority) {
-            if (priority == null) priority = "MEDIUM";
+            if (priority == null) {
+                return ContextCompat.getColor(itemView.getContext(), R.color.priority_medium);
+            }
 
             switch (priority.toUpperCase()) {
                 case "HIGH":

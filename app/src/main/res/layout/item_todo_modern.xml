@@ -97,8 +97,7 @@
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/ic_calendar"
-                    android:tint="@color/text_secondary" />
+                    android:src="@drawable/ic_calendar"/>
 
                 <TextView
                     android:id="@+id/tvDate"

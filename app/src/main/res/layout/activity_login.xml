@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="32dp"
+            android:minHeight="@dimen/match_parent"
             android:gravity="center">
 
             <!-- Logo -->
@@ -192,7 +193,7 @@
                         android:textColor="@android:color/white"
                         app:backgroundTint="@color/google_blue"
                         app:cornerRadius="28dp"
-                        app:icon="@drawable/ic_google"
+                        app:icon="@drawable/ic_google_xml"
                         app:iconGravity="textStart"
                         app:iconPadding="12dp"
                         android:layout_marginBottom="16dp" />

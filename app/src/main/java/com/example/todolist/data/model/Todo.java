@@ -11,7 +11,7 @@ public class Todo {
     private String description;
     private String date;
     private String userId;
-    private boolean completed; // Changed from isCompleted to completed for Firestore consistency
+    private boolean completed; // Changed from isCompleted to completed
     private String priority; // HIGH, MEDIUM, LOW
     private String category;
     @ServerTimestamp
@@ -28,7 +28,7 @@ public class Todo {
         this.description = description;
         this.date = date;
         this.userId = userId;
-        this.completed = false;
+        this.completed = false; // Updated
         this.priority = "MEDIUM";
         this.category = "General";
     }
@@ -74,12 +74,8 @@ public class Todo {
         this.userId = userId;
     }
 
-    // Keep both methods for backward compatibility
+    // Fixed getter/setter for boolean field
     public boolean isCompleted() {
-        return completed;
-    }
-
-    public boolean getCompleted() {
         return completed;
     }
 
@@ -117,19 +113,5 @@ public class Todo {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    @Override
-    public String toString() {
-        return "Todo{" +
-                "id='" + id + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", date='" + date + '\'' +
-                ", userId='" + userId + '\'' +
-                ", completed=" + completed +
-                ", priority='" + priority + '\'' +
-                ", category='" + category + '\'' +
-                '}';
     }
 }

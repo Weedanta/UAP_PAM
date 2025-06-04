@@ -2,7 +2,6 @@ package com.example.todolist.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +22,10 @@ import com.example.todolist.ui.main.EditTodoActivity;
 import com.example.todolist.ui.main.TodoViewModel;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment implements TodoAdapter.OnTodoClickListener {
-    private static final String TAG = "HomeFragment";
-
     private FragmentHomeBinding binding;
     private TodoViewModel viewModel;
     private TodoAdapter adapter;
@@ -43,7 +41,6 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTodoClickLis
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "HomeFragment onViewCreated");
 
         authManager = new FirebaseAuthManager(requireActivity());
         setupRecyclerView();
@@ -53,108 +50,85 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTodoClickLis
     }
 
     private void setupRecyclerView() {
-        Log.d(TAG, "Setting up RecyclerView");
         adapter = new TodoAdapter(this);
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
     }
 
     private void setupViewModel() {
-        Log.d(TAG, "Setting up ViewModel");
         viewModel = new ViewModelProvider(this).get(TodoViewModel.class);
 
         FirebaseUser currentUser = authManager.getCurrentUser();
         if (currentUser != null) {
-            Log.d(TAG, "Current user: " + currentUser.getUid());
             viewModel.setUserId(currentUser.getUid());
-        } else {
-            Log.w(TAG, "No current user found");
         }
     }
 
     private void setupFab() {
         binding.fabAdd.setOnClickListener(v -> {
-            Log.d(TAG, "FAB clicked, starting AddTodoActivity");
-            Intent intent = new Intent(getContext(), AddTodoActivity.class);
-            startActivity(intent);
+            try {
+                Intent intent = new Intent(getContext(), AddTodoActivity.class);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(getContext(), "Error opening add todo: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
     private void observeViewModel() {
-        Log.d(TAG, "Setting up observers");
-
-        // Observe todos
         viewModel.getUserTodos().observe(getViewLifecycleOwner(), todos -> {
-            Log.d(TAG, "Todos updated: " + (todos != null ? todos.size() : 0) + " items");
             if (todos != null) {
-                updateUI(todos);
-                updateStats(todos);
+                adapter.setTodos(todos);
+                updateStatistics(todos);
+
+                // Show/hide empty view
+                if (todos.isEmpty()) {
+                    binding.emptyView.setVisibility(View.VISIBLE);
+                    binding.recyclerView.setVisibility(View.GONE);
+                } else {
+                    binding.emptyView.setVisibility(View.GONE);
+                    binding.recyclerView.setVisibility(View.VISIBLE);
+                }
             }
         });
 
-        // Observe error messages
         viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
-            if (error != null && !error.isEmpty()) {
-                Log.e(TAG, "Error: " + error);
+            if (error != null) {
                 Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
-                viewModel.clearMessages(); // Clear the message after showing
             }
         });
 
-        // Observe success messages
         viewModel.getSuccessMessage().observe(getViewLifecycleOwner(), success -> {
-            if (success != null && !success.isEmpty()) {
-                Log.d(TAG, "Success: " + success);
+            if (success != null) {
                 Toast.makeText(getContext(), success, Toast.LENGTH_SHORT).show();
-                viewModel.clearMessages(); // Clear the message after showing
             }
         });
     }
 
-    private void updateUI(List<Todo> todos) {
-        adapter.setTodos(todos);
-
-        if (todos.isEmpty()) {
-            binding.emptyView.setVisibility(View.VISIBLE);
-            binding.recyclerView.setVisibility(View.GONE);
-            Log.d(TAG, "No todos - showing empty view");
-        } else {
-            binding.emptyView.setVisibility(View.GONE);
-            binding.recyclerView.setVisibility(View.VISIBLE);
-            Log.d(TAG, "Showing " + todos.size() + " todos");
-        }
-    }
-
-    private void updateStats(List<Todo> todos) {
+    private void updateStatistics(List<Todo> todos) {
         int total = todos.size();
         int completed = 0;
-        int pending = 0;
 
         for (Todo todo : todos) {
             if (todo.isCompleted()) {
                 completed++;
-            } else {
-                pending++;
             }
         }
 
-        binding.tvTotalTodos.setText(String.valueOf(total));
-        binding.tvCompletedTodos.setText(String.valueOf(completed));
-        binding.tvPendingTodos.setText(String.valueOf(pending));
+        int pending = total - completed;
 
-        Log.d(TAG, "Stats updated - Total: " + total + ", Completed: " + completed + ", Pending: " + pending);
+        binding.tvTotalTodos.setText(String.valueOf(total));
+        binding.tvPendingTodos.setText(String.valueOf(pending));
+        binding.tvCompletedTodos.setText(String.valueOf(completed));
     }
 
     @Override
     public void onTodoClick(Todo todo) {
-        Log.d(TAG, "Todo clicked: " + todo.getTitle());
-        // Handle todo click (e.g., show details or toggle completion)
-        onCompleteToggle(todo, !todo.isCompleted());
+        // Handle todo click (e.g., show details)
     }
 
     @Override
     public void onEditClick(Todo todo) {
-        Log.d(TAG, "Edit clicked for todo: " + todo.getTitle());
         Intent intent = new Intent(getContext(), EditTodoActivity.class);
         intent.putExtra("TODO_ID", todo.getId());
         intent.putExtra("TITLE", todo.getTitle());
@@ -167,22 +141,23 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTodoClickLis
 
     @Override
     public void onDeleteClick(Todo todo) {
-        Log.d(TAG, "Delete clicked for todo: " + todo.getTitle());
         viewModel.deleteTodo(todo.getId());
     }
 
     @Override
     public void onCompleteToggle(Todo todo, boolean isCompleted) {
-        Log.d(TAG, "Toggle completion for todo: " + todo.getTitle() + " to " + isCompleted);
+        // Update the local todo object immediately for UI responsiveness
+        todo.setCompleted(isCompleted);
+        adapter.notifyDataSetChanged();
+
+        // Then update in Firebase
         viewModel.toggleTodoComplete(todo.getId(), isCompleted);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "HomeFragment onResume");
-
-        // Refresh user ID in case user changed
+        // Refresh data when fragment becomes visible again
         FirebaseUser currentUser = authManager.getCurrentUser();
         if (currentUser != null && viewModel != null) {
             viewModel.setUserId(currentUser.getUid());
@@ -192,7 +167,6 @@ public class HomeFragment extends Fragment implements TodoAdapter.OnTodoClickLis
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "HomeFragment onDestroyView");
         binding = null;
     }
 }
