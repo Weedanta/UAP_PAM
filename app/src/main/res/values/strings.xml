@@ -1,3 +1,96 @@
 <resources>
-    <string name="app_name">ToDoList</string>
+    <string name="app_name">TuDu</string>
+
+    <!-- Auth Strings -->
+    <string name="welcome_title">Welcome to TuDu</string>
+    <string name="welcome_subtitle">Your personal task manager</string>
+    <string name="sign_in_with_google">Continue with Google</string>
+    <string name="getting_started">Get Started</string>
+    <string name="sign_in_description">Sign in with your Google account to sync your todos across all devices</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_profile">Profile</string>
+
+    <!-- Todo Strings -->
+    <string name="add_todo">Add Todo</string>
+    <string name="edit_todo">Edit Todo</string>
+    <string name="save_todo">Save Todo</string>
+    <string name="update_todo">Update</string>
+    <string name="delete_todo">Delete</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Form Fields -->
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="due_date">Due Date</string>
+    <string name="priority">Priority</string>
+    <string name="category">Category</string>
+
+    <!-- Priority Levels -->
+    <string name="priority_high">HIGH</string>
+    <string name="priority_medium">MEDIUM</string>
+    <string name="priority_low">LOW</string>
+
+    <!-- Categories -->
+    <string name="category_general">General</string>
+    <string name="category_work">Work</string>
+    <string name="category_personal">Personal</string>
+    <string name="category_shopping">Shopping</string>
+    <string name="category_health">Health</string>
+    <string name="category_study">Study</string>
+
+    <!-- Statistics -->
+    <string name="total_todos">Total</string>
+    <string name="pending_todos">Pending</string>
+    <string name="completed_todos">Completed</string>
+
+    <!-- Empty States -->
+    <string name="no_todos">No todos yet</string>
+    <string name="no_todos_subtitle">Tap the + button to create your first todo</string>
+
+    <!-- Profile -->
+    <string name="profile">Profile</string>
+    <string name="member_since">Member since %s</string>
+    <string name="todo_statistics">Todo Statistics</string>
+    <string name="statistics_subtitle">View your productivity insights</string>
+    <string name="settings">Settings</string>
+    <string name="settings_subtitle">Manage your preferences</string>
+    <string name="help_support">Help &amp; Support</string>
+    <string name="help_subtitle">Get help or report issues</string>
+    <string name="sign_out">Sign Out</string>
+
+    <!-- Messages -->
+    <string name="todo_added">Todo added successfully</string>
+    <string name="todo_updated">Todo updated successfully</string>
+    <string name="todo_deleted">Todo deleted successfully</string>
+    <string name="error_add_todo">Failed to add todo</string>
+    <string name="error_update_todo">Failed to update todo</string>
+    <string name="error_delete_todo">Failed to delete todo</string>
+    <string name="error_user_not_authenticated">User not authenticated</string>
+    <string name="error_todo_id_not_found">Todo ID not found</string>
+
+    <!-- Validation -->
+    <string name="error_title_required">Title is required</string>
+    <string name="error_description_required">Description is required</string>
+    <string name="error_date_required">Date is required</string>
+
+    <!-- Dialogs -->
+    <string name="delete_todo_title">Delete Todo</string>
+    <string name="delete_todo_message">Are you sure you want to delete this todo?</string>
+    <string name="delete">Delete</string>
+
+    <!-- Features -->
+    <string name="feature_sync">Sync</string>
+    <string name="feature_secure">Secure</string>
+    <string name="feature_organize">Organize</string>
+
+    <!-- Menu -->
+    <string name="action_logout">Logout</string>
+
+    <!-- Loading -->
+    <string name="loading">Loading...</string>
+
+    <!-- Firebase -->
+    <string name="default_web_client_id">YOUR_WEB_CLIENT_ID_HERE</string>
 </resources>
